@@ -6,13 +6,15 @@ You shall do the following before starting your own work.
 
 - `git clone` to directory of your name, and not the default name
   
-  - `git clone http://githhub.com/hkhc/aar-project-skeleton <your-project-name`
+  - `git clone http://githhub.com/hkhc/aar-project-skeleton <your-project-name>`
 
 - Change the copyright template name
   
   - In Android Studio, select "Preferences..." -> "Editor" -> "Copyright" -> "Copyright Profiles"
   
   - Fill in your name at [MyName], and optional change the profile name "ASL MyName". And of course you may change the license entirely.
+  
+  - Select "Code" -> "Update Copyright...", and select "whole project" to update all Copyright notices.
 
 - Change the AAR library details at `library-android\pom.yaml` directory.
 
@@ -68,7 +70,7 @@ gradle.publish.secret=[Gradle Plugin Portal account secret]
 # temporary fix for SHA512 issue when publish to Maven Central
 # https://github.com/gradle/gradle/pull/11358
 systemProp.org.gradle.internal.publish.checksums.insecure=true
-
-
 ```
 
+- change applicationId of the demo APK of the library at `app/build.gradle.kts`
+- 

@@ -1,3 +1,21 @@
+/*
+ * Copyright (c) 2020. Herman Cheung
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ *
+ */
+
 plugins {
     id("com.android.application")
     id("kotlin-android")
@@ -8,7 +26,7 @@ plugins {
 android {
     compileSdkVersion(28)
     defaultConfig {
-        applicationId = "io.hkhc.mylibrary.demo"
+        applicationId = "io.hkhc.recyclerviewkit.io.hkhc.recyclerviewkit.demo"
         minSdkVersion(21)
         targetSdkVersion(28)
         versionCode = 1
@@ -23,13 +41,20 @@ android {
     }
 }
 
+@Suppress("GradleDependency")
 dependencies {
     implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
-    implementation(kotlin("stdlib-jdk8", "1.3.70"))
-    implementation("com.android.support:appcompat-v7:28.0.0")
-    implementation("androidx.appcompat:appcompat:1.1.0")
-    implementation("androidx.constraintlayout:constraintlayout:1.1.3")
-    testImplementation("junit:junit:4.12")
-    androidTestImplementation("com.android.support.test:runner:1.0.2")
-    androidTestImplementation("com.android.support.test.espresso:espresso-core:3.0.2")
+    implementation(kotlin("stdlib-jdk8", "_"))
+    implementation(project(":library-android"))
+    implementation("androidx.appcompat:appcompat:_")
+    implementation("androidx.constraintlayout:constraintlayout:_")
+    implementation("androidx.recyclerview:recyclerview:_")
+    implementation("androidx.paging:paging-runtime:_")
+    implementation("androidx.paging:paging-runtime-ktx:_")
+    implementation("io.reactivex.rxjava2:rxjava:_")
+    implementation("io.reactivex.rxjava2:rxkotlin:_")
+    implementation("io.reactivex.rxjava2:rxandroid:_")
+    testImplementation("junit:junit:_")
+    androidTestImplementation("com.android.support.test:runner:_")
+    androidTestImplementation("com.android.support.test.espresso:espresso-core:_")
 }

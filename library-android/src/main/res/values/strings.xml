@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8" ?>
 <!--
   ~ Copyright (c) 2020. Herman Cheung
   ~
@@ -16,5 +17,7 @@
   ~
   -->
 
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="io.hkhc.demo" />
+<resources>
+    <string name="is_header">Is Header</string>
+    <string name="is_footer">Is Footer</string>
+</resources>

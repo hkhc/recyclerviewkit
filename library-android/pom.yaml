@@ -1,7 +1,7 @@
-group: <my-group>
-artifactId: <artifactId>
+group: io.hkhc.recyclerviewkit
+artifactId: recyclerviewkit
 version: 0.1
-description: my library description
+description: Higher level abstraction of RecyclerView
 
 licenses:
   - name: Apache-2.0
@@ -9,9 +9,9 @@ licenses:
 
 developers:
   - id: hkhc
-    name: <my-name>
-    email: <my-email>
+    name: Herman Cheung
+    email: herman.kh.cheung+recyclerviewkit@gmail.com
 
 scm:
   repoType: github.com
-  repoName: <repo-name>
+  repoName: hkhc/recyclerviewkit

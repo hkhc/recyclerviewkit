@@ -18,25 +18,23 @@
 
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
-
-
 buildscript {
 
 //    ext {
 //
 //        /* Platform and gradle plugin version */
-//        kotlin_version = "1.3.61"
+//        kotlin_version = "1.3.72"
 //        detekt_version = "1.3.1"
 //        dokka_version = "0.10.1"
 //
 //        junit_version = "4.12"
 //        coretesting_version = "2.1.0"
 //
-//        dagger_version = "2.25.4"
+//        dagger_version = "2.27"
 //        retrofit_version = "2.7.0"
 //        okhttp_version = "3.14.4"
 //
-//        corektx_version = "1.1.0"
+//        corektx_version = "1.2.0"
 //        appcompat_version = "1.1.0"
 //        lifecycle_version = "2.2.0"
 //        constraintLayout_version = "2.0.0-beta4"
@@ -48,7 +46,7 @@ buildscript {
 //        rxkotlin_version = "2.4.0"
 //        rxandroid_version = "2.1.1"
 //
-//        lottie_version = "3.3.1"
+//        lottie_version = "3.4.0"
 //        jsonapi_converter_version = "0.10"
 //
 //        mockk_version = "1.9.3"
@@ -56,6 +54,7 @@ buildscript {
 //        testing_core_version = "1.1.0"
 //        arch_coretesting_version = "2.1.0"
 //
+//        paging_version = '2.1.2'
 //
 //    }
 
@@ -71,7 +70,6 @@ buildscript {
         classpath("com.android.tools.build:gradle:3.6.3")
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.3.71")
     }
-
 }
 
 plugins {
@@ -82,16 +80,11 @@ plugins {
     id("com.dorongold.task-tree") version "1.5"
 }
 
-//group = "io.hkhc"
-//version = "0.1"
-
 subprojects {
-
     repositories {
         mavenCentral()
         jcenter()
         google()
     }
-
 }
 

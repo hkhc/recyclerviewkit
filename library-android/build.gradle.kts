@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019. Herman Cheung
+ * Copyright (c) 2020. Herman Cheung
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
  *
  *
  */
+import org.jlleitschuh.gradle.ktlint.reporter.*
 
 plugins {
     id("com.android.library")
@@ -29,6 +30,22 @@ plugins {
     id("io.gitlab.arturbosch.detekt")
     // for build script debugging
     id("com.dorongold.task-tree")
+}
+
+/*
+ It is needed to make sure every version of java compiler to generate same kind of bytecode.
+ Without it and build this with java 8+ compiler, then the project build with java 8
+ will get error like this:
+   > Unable to find a matching variant of <your-artifact>:
+      - Variant 'apiElements' capability <your-artifact>:
+          - Incompatible attributes:
+              - Required org.gradle.jvm.version '8' and found incompatible value '13'.
+              - Required org.gradle.usage 'java-runtime' and found incompatible value 'java-api'.
+              ...
+ */
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
 }
 
 tasks {
@@ -63,6 +80,9 @@ android {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
 
     testOptions {
         with(unitTests) {
@@ -72,6 +92,22 @@ android {
     }
 
 }
+
+detekt {
+    buildUponDefaultConfig = true
+    config = files("$rootDir/detekt/detekt-config.yml")
+}
+
+ktlint {
+    debug.set(false)
+    verbose.set(false)
+    coloredOutput.set(true)
+    reporters {
+        reporter(ReporterType.PLAIN)
+        reporter(ReporterType.CHECKSTYLE)
+    }
+}
+
 
 android.libraryVariants.configureEach {
     val variantName = name
@@ -86,12 +122,26 @@ android.libraryVariants.configureEach {
     }
 }
 
+@Suppress("GradleDependency")
 dependencies {
 
+    
     implementation(kotlin("stdlib-jdk8", "1.3.71"))
 
-    testImplementation("junit:junit:4.13")
-    testImplementation("org.assertj:assertj-core:3.12.2")
-    testImplementation("org.robolectric:robolectric:4.1")
-    testImplementation("io.mockk:mockk:1.9.3")
+    implementation ("io.hkhc.log:ihlog-android:_")
+    implementation ("org.jetbrains.kotlin:kotlin-stdlib-jdk8:_")
+    implementation ("androidx.appcompat:appcompat:_")
+    implementation ("androidx.core:core-ktx:_")
+    implementation ("androidx.recyclerview:recyclerview:_")
+    testImplementation ("junit:junit:_")
+    testImplementation ("androidx.test:core:_")
+    testImplementation ("androidx.arch.core:core-testing:_")
+    testImplementation ("io.mockk:mockk:_")
+    testImplementation ("org.assertj:assertj-core:_")
+    androidTestImplementation ("androidx.test.ext:junit:_")
+    androidTestImplementation ("androidx.test.espresso:espresso-core:_")
+    detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:_")
+    
+    
+    testImplementation("org.robolectric:robolectric:_")
 }
