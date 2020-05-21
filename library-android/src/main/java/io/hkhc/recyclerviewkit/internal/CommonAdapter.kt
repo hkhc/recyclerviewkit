@@ -22,7 +22,6 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import io.hkhc.log.l
-import io.hkhc.recyclerviewkit.HasDelegate
 import io.hkhc.recyclerviewkit.ListSink
 import io.hkhc.recyclerviewkit.ListSource
 import io.hkhc.recyclerviewkit.ViewHolderFactory
@@ -77,7 +76,6 @@ open class CommonAdapter<T> :
         return viewHolderCollection.matchViewHolderFactory(mData[position])
     }
 
-
     override fun getItemCount(): Int {
         l.debug("getItem Count ${mData.size}")
         return mData.size
@@ -87,9 +85,7 @@ open class CommonAdapter<T> :
 
         l.debug("onBindViewholder pos $position")
 
-
         val factory = viewHolderCollection.findViewHolderFactory(getItemViewType(position))
         factory?.bind(holder, mData[position], position)
     }
-
 }

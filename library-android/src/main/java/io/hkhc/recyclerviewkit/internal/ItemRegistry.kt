@@ -95,7 +95,6 @@ open abstract class ItemRegistry<WrappedVH : RecyclerView.ViewHolder>(
             }
         }
 
-
     fun isValidType(type: Int): Boolean {
         val result = typeMap.keys.contains(type)
         l.debug("isValidType $type $result")
@@ -156,7 +155,7 @@ open abstract class ItemRegistry<WrappedVH : RecyclerView.ViewHolder>(
 
     fun bind(viewHolder: RecyclerView.ViewHolder, pos: Int, payloads: List<Any>? = null) {
         if (!inRange(pos)) {
-            throw IllegalStateException("Invalid position (${pos})")
+            throw IllegalStateException("Invalid position ($pos)")
         }
         getFactoryByAdapterPosition(pos)
             ?.bind(viewHolder, Any(), pos, payloads)
@@ -200,7 +199,7 @@ open abstract class ItemRegistry<WrappedVH : RecyclerView.ViewHolder>(
      * position of first item expected to be shown
      */
     abstract fun getFirstItemPos(visible: Boolean): Int
-    fun inRange(pos: Int) = pos in getFirstItemPos(true) until getFirstItemPos(true)+factoryCount
+    fun inRange(pos: Int) = pos in getFirstItemPos(true) until getFirstItemPos(true) + factoryCount
 
     /**
      * we may assumed that pos must be in range in implementation, as the base class will always

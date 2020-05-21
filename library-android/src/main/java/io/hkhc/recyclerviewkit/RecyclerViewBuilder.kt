@@ -18,7 +18,6 @@
 
 package io.hkhc.recyclerviewkit
 
-import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -45,7 +44,7 @@ import io.hkhc.recyclerviewkit.internal.ViewHolderConsumer
  *
  */
 @Suppress("TooManyFunctions")
-open class RecyclerViewBuilder<T>() : ListSink<T> {
+open class RecyclerViewBuilder<T> : ListSink<T> {
 
     override var listData: ListSource<T>? = null
 
@@ -215,8 +214,6 @@ open class RecyclerViewBuilder<T>() : ListSink<T> {
 //        viewHolderFactories.add(factory)
 //    }
 
-
-
     private fun setListData(
         recyclerView: RecyclerView,
         newAdapter: RecyclerView.Adapter<out RecyclerView.ViewHolder>,
@@ -232,7 +229,7 @@ open class RecyclerViewBuilder<T>() : ListSink<T> {
             null
         }
 
-        sink?.listData = if (newData!=null) {
+        sink?.listData = if (newData != null) {
             l.debug("Use new data")
             newData
         } else {
@@ -246,7 +243,6 @@ open class RecyclerViewBuilder<T>() : ListSink<T> {
             }
             originalData
         }
-
     }
 
     private fun registerFactoryToAdapter(
@@ -254,14 +250,13 @@ open class RecyclerViewBuilder<T>() : ListSink<T> {
         factory: ViewHolderFactory<T>
     ) {
         @Suppress("UNCHECKED_CAST")
-        val viewHolderConsumer: ViewHolderConsumer<T> = if (adapter is ViewHolderConsumer<*>)
+        val viewHolderConsumer: ViewHolderConsumer<T> = if (adapter is ViewHolderConsumer<*>) {
             adapter as ViewHolderConsumer<T>
-        else {
+        } else {
             throw IllegalArgumentException("adapterFactory provided a non RecyclerView.Adapter object")
         }
 
         viewHolderConsumer.registerViewHolderFactory(factory)
-
     }
 
     private fun setFactoryInitParam(factory: ViewHolderFactory<T>, paramBuilder: RecyclerViewItemParamBuilder<T>) {
@@ -274,7 +269,6 @@ open class RecyclerViewBuilder<T>() : ListSink<T> {
             val sink = factory as ParamSink<T>
             sink.itemParam = paramBuilder.build()
         }
-
     }
 
     fun build(recycler: RecyclerView): RecyclerView {
@@ -326,7 +320,7 @@ open class RecyclerViewBuilder<T>() : ListSink<T> {
 
 fun getRootAdapter(
     adapter: RecyclerView.Adapter<out RecyclerView.ViewHolder>
-) : RecyclerView.Adapter<out RecyclerView.ViewHolder> {
+): RecyclerView.Adapter<out RecyclerView.ViewHolder> {
     return if (adapter is HasDelegate) {
         return (adapter as HasDelegate).getDelegated()
     } else {

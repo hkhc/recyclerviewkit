@@ -18,7 +18,6 @@
 
 package io.hkhc.recyclerviewkit.internal
 
-import io.hkhc.log.l
 import io.hkhc.recyclerviewkit.ViewHolderFactory
 
 class ViewHolderFactoryCollection<T> {

@@ -28,7 +28,6 @@ import io.hkhc.recyclerviewkit.HasDelegate
 import io.hkhc.recyclerviewkit.RecyclerViewBuilder
 import io.hkhc.recyclerviewkit.ViewHolderFactory
 
-
 class CommonPagedListAdapter<T>(diffUtil: DiffUtil.ItemCallback<T>) :
     PagedListAdapter<T, RecyclerView.ViewHolder>(diffUtil),
     ViewHolderConsumer<T>,
@@ -77,7 +76,6 @@ class CommonPagedListAdapter<T>(diffUtil: DiffUtil.ItemCallback<T>) :
     override fun getDelegated(): RecyclerView.Adapter<RecyclerView.ViewHolder> {
         return this
     }
-
 }
 
 fun <T> RecyclerViewBuilder<T>.pagedAdapter(diffUtil: DiffUtil.ItemCallback<T>) {

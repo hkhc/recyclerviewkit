@@ -321,7 +321,6 @@ class HeaderFooterListAdapter<WrappedVH : RecyclerView.ViewHolder>(
 
     private val delegatedObservers = mutableMapOf<RecyclerView.AdapterDataObserver, BridingObserver>()
 
-
     override fun registerAdapterDataObserver(observer: RecyclerView.AdapterDataObserver) {
 
         val bridgeObserver = BridingObserver(this, observer)

@@ -57,7 +57,6 @@ tasks {
     }
 }
 
-
 android {
     compileSdkVersion(28)
 
@@ -90,7 +89,6 @@ android {
             isReturnDefaultValues = true
         }
     }
-
 }
 
 detekt {
@@ -108,7 +106,6 @@ ktlint {
     }
 }
 
-
 android.libraryVariants.configureEach {
     val variantName = name
 
@@ -125,25 +122,23 @@ android.libraryVariants.configureEach {
 @Suppress("GradleDependency")
 dependencies {
 
-    
     implementation(kotlin("stdlib-jdk8", "1.3.71"))
 
-    implementation ("io.hkhc.log:ihlog-android:_")
-    implementation ("org.jetbrains.kotlin:kotlin-stdlib-jdk8:_")
-    implementation ("androidx.appcompat:appcompat:_")
-    implementation ("androidx.core:core-ktx:_")
-    implementation ("androidx.recyclerview:recyclerview:_")
-    implementation ("androidx.paging:paging-runtime:_")
-    implementation ("androidx.paging:paging-runtime-ktx:_")
-    testImplementation ("junit:junit:_")
-    testImplementation ("androidx.test:core:_")
-    testImplementation ("androidx.arch.core:core-testing:_")
-    testImplementation ("io.mockk:mockk:_")
-    testImplementation ("org.assertj:assertj-core:_")
-    androidTestImplementation ("androidx.test.ext:junit:_")
-    androidTestImplementation ("androidx.test.espresso:espresso-core:_")
+    implementation("io.hkhc.log:ihlog-android:_")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:_")
+    implementation("androidx.appcompat:appcompat:_")
+    implementation("androidx.core:core-ktx:_")
+    implementation("androidx.recyclerview:recyclerview:_")
+    implementation("androidx.paging:paging-runtime:_")
+    implementation("androidx.paging:paging-runtime-ktx:_")
+    testImplementation("junit:junit:_")
+    testImplementation("androidx.test:core:_")
+    testImplementation("androidx.arch.core:core-testing:_")
+    testImplementation("io.mockk:mockk:_")
+    testImplementation("org.assertj:assertj-core:_")
+    androidTestImplementation("androidx.test.ext:junit:_")
+    androidTestImplementation("androidx.test.espresso:espresso-core:_")
     detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:_")
-    
-    
+
     testImplementation("org.robolectric:robolectric:_")
 }

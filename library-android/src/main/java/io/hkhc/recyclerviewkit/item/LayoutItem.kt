@@ -24,9 +24,9 @@ import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.RecyclerView
 import io.hkhc.recyclerviewkit.ViewHolderFactory
 
-class LayoutItem(@LayoutRes private val resId: Int): ViewHolderFactory<Any> {
+class LayoutItem(@LayoutRes private val resId: Int) : ViewHolderFactory<Any> {
 
-    class LayoutViewHolder(view: View): RecyclerView.ViewHolder(view)
+    class LayoutViewHolder(view: View) : RecyclerView.ViewHolder(view)
 
     override fun create(parent: ViewGroup, view: View?): RecyclerView.ViewHolder {
         assert(view != null)

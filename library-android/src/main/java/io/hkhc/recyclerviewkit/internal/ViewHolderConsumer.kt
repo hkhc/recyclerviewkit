@@ -24,5 +24,4 @@ interface ViewHolderConsumer<T> {
 
     fun registerViewHolderFactory(factory: ViewHolderFactory<T>)
     fun unregisterViewHolderFactory(factory: ViewHolderFactory<T>)
-
 }
