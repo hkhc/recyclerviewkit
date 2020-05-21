@@ -25,5 +25,5 @@ package io.hkhc.recyclerviewkit
  */
 interface ListSink<T> {
 
-    var listData: ListSource<T>
+    var listData: ListSource<T>?
 }

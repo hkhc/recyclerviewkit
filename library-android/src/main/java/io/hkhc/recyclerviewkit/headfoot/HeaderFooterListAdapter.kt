@@ -341,10 +341,7 @@ class HeaderFooterListAdapter<WrappedVH : RecyclerView.ViewHolder>(
 
     override fun getDelegated(): RecyclerView.Adapter<*> {
         if (delegateAdapter is HasDelegate) {
-            @Suppress("UNCHECKED_CAST")
-            (delegateAdapter as HasDelegate).also {
-                return@getDelegated delegateAdapter.getDelegated()
-            }
+            return@getDelegated delegateAdapter.getDelegated()
         } else {
             return delegateAdapter
         }

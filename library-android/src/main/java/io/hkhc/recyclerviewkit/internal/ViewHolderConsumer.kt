@@ -16,16 +16,13 @@
  *
  */
 
-package io.hkhc.recyclerviewkit.demo
+package io.hkhc.recyclerviewkit.internal
 
-import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
-import io.hkhc.demo.demo.R
+import io.hkhc.recyclerviewkit.ViewHolderFactory
 
-class MainActivity : AppCompatActivity() {
+interface ViewHolderConsumer<T> {
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-    }
+    fun registerViewHolderFactory(factory: ViewHolderFactory<T>)
+    fun unregisterViewHolderFactory(factory: ViewHolderFactory<T>)
+
 }

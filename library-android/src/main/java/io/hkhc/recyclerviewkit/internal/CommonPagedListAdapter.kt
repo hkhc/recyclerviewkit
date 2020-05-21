@@ -20,27 +20,21 @@ package io.hkhc.recyclerviewkit.internal
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.paging.PagedListAdapter
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import io.hkhc.log.l
 import io.hkhc.recyclerviewkit.HasDelegate
-import io.hkhc.recyclerviewkit.ListSink
-import io.hkhc.recyclerviewkit.ListSource
+import io.hkhc.recyclerviewkit.RecyclerViewBuilder
 import io.hkhc.recyclerviewkit.ViewHolderFactory
 
-open class CommonAdapter<T> :
-    RecyclerView.Adapter<RecyclerView.ViewHolder>(),
-    ListSink<T>,
-    ViewHolderConsumer<T> {
+
+class CommonPagedListAdapter<T>(diffUtil: DiffUtil.ItemCallback<T>) :
+    PagedListAdapter<T, RecyclerView.ViewHolder>(diffUtil),
+    ViewHolderConsumer<T>,
+    HasDelegate {
 
     private val viewHolderCollection = ViewHolderFactoryCollection<T>()
-    private var mData: ListSource<T> = ListSource.EmptyListSource()
-    override var listData: ListSource<T>?
-        get() = mData
-        set(value) {
-            l.debug("set list Count ${mData.size}")
-            value?.let { mData = it }
-            notifyDataSetChanged()
-        }
 
     override fun registerViewHolderFactory(factory: ViewHolderFactory<T>) {
         l.debug("registerViewHolderFactory ${factory::class.java.name}")
@@ -53,8 +47,6 @@ open class CommonAdapter<T> :
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-
-        l.debug("onCreateViewHolder viewType $viewType")
 
         val factory = viewHolderCollection.findViewHolderFactory(viewType)
 
@@ -74,22 +66,20 @@ open class CommonAdapter<T> :
     }
 
     override fun getItemViewType(position: Int): Int {
-        return viewHolderCollection.matchViewHolderFactory(mData[position])
-    }
-
-
-    override fun getItemCount(): Int {
-        l.debug("getItem Count ${mData.size}")
-        return mData.size
+        return viewHolderCollection.matchViewHolderFactory(getItem(position)!!)
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-
-        l.debug("onBindViewholder pos $position")
-
-
         val factory = viewHolderCollection.findViewHolderFactory(getItemViewType(position))
-        factory?.bind(holder, mData[holder.adapterPosition], holder.adapterPosition)
+        factory?.bind(holder, getItem(holder.adapterPosition)!!, holder.adapterPosition)
     }
 
+    override fun getDelegated(): RecyclerView.Adapter<RecyclerView.ViewHolder> {
+        return this
+    }
+
+}
+
+fun <T> RecyclerViewBuilder<T>.pagedAdapter(diffUtil: DiffUtil.ItemCallback<T>) {
+    adapterFactory { CommonPagedListAdapter(diffUtil) }
 }

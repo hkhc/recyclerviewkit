@@ -133,6 +133,8 @@ dependencies {
     implementation ("androidx.appcompat:appcompat:_")
     implementation ("androidx.core:core-ktx:_")
     implementation ("androidx.recyclerview:recyclerview:_")
+    implementation ("androidx.paging:paging-runtime:_")
+    implementation ("androidx.paging:paging-runtime-ktx:_")
     testImplementation ("junit:junit:_")
     testImplementation ("androidx.test:core:_")
     testImplementation ("androidx.arch.core:core-testing:_")

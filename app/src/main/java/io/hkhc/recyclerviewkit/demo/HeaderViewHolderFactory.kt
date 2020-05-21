@@ -24,7 +24,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import io.hkhc.recyclerviewkit.ViewHolderFactory
 
-class HeaderViewHolderFactory(val content: String) : ViewHolderFactory<Any> {
+class HeaderViewHolderFactory<T>(val content: String) : ViewHolderFactory<T> {
 
     class HeadViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val textView: TextView = itemView.findViewById(android.R.id.text1)
@@ -32,16 +32,16 @@ class HeaderViewHolderFactory(val content: String) : ViewHolderFactory<Any> {
 
     override fun create(parent: ViewGroup, view: View?) =
         HeadViewHolder(view!!)
-    override fun canHandle(item: Any) = true
+    override fun canHandle(item: T) = true
     override fun layoutResId() = android.R.layout.simple_list_item_1
 
-    override fun bind(viewHolder: RecyclerView.ViewHolder, item: Any, pos: Int, payload: List<Any>?) {
+    override fun bind(viewHolder: RecyclerView.ViewHolder, item: T, pos: Int, payload: List<Any>?) {
         if (viewHolder is HeadViewHolder) {
             viewHolder.textView.text = content
         }
     }
 
     override fun onRecycle(viewHolder: RecyclerView.ViewHolder) {
-        TODO("Not yet implemented")
+        // do nothing intentionally
     }
 }

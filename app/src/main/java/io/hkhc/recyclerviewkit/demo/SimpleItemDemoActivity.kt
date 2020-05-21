@@ -28,7 +28,7 @@ import io.hkhc.recyclerviewkit.array
 import io.hkhc.recyclerviewkit.item.OneLineItem
 import io.hkhc.utils.isEven
 
-class RecyclerSampleActivity : AppCompatActivity() {
+class SimpleItemDemoActivity : AppCompatActivity() {
 
     data class Data(val title: String, val author: String, val selected: Boolean)
 
@@ -51,7 +51,7 @@ class RecyclerSampleActivity : AppCompatActivity() {
             .viewHolderBy(OneLineItem()) {
                 layout(android.R.layout.simple_list_item_1)
                 onClick { _, value, _ ->
-                    Toast.makeText(this@RecyclerSampleActivity, value.toString(), Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@SimpleItemDemoActivity, value.toString(), Toast.LENGTH_SHORT).show()
                 }
             }
             .array(data)

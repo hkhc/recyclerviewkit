@@ -22,7 +22,9 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import io.hkhc.log.l
+import io.hkhc.recyclerviewkit.headfoot.HeaderFooterListAdapter
 import io.hkhc.recyclerviewkit.internal.CommonAdapter
+import io.hkhc.recyclerviewkit.internal.ViewHolderConsumer
 
 /**
  * It encapsulate details of RecyclerView, and configure RecyclerView in easy way.
@@ -40,9 +42,9 @@ import io.hkhc.recyclerviewkit.internal.CommonAdapter
  *
  */
 @Suppress("TooManyFunctions")
-open class RecyclerViewBuilder<T> : ListSink<T> {
+open class RecyclerViewBuilder<T>() : ListSink<T> {
 
-    override var listData: ListSource<T> = ListSource.EmptyListSource()
+    override var listData: ListSource<T>? = null
 
     // implementing ListSink<T>
 //    override var listData: ListSource<T>
@@ -77,12 +79,18 @@ open class RecyclerViewBuilder<T> : ListSink<T> {
 
     private var defaultParam = RecyclerViewItemParam<T>()
 
-    private var adapterFactory: () -> CommonAdapter<T> = { CommonAdapter() }
+    private var adapterFactory: () -> RecyclerView.Adapter<RecyclerView.ViewHolder> = { CommonAdapter<T>() }
 
-    private var configBlock: (RecyclerView, CommonAdapter<T>) -> Unit = { _, _ -> }
+    private var headerFactories = mutableListOf<ViewHolderFactory<Any>>()
+    private var footerFactories = mutableListOf<ViewHolderFactory<Any>>()
+
+    private var recyclerViewConfigurer:
+                (RecyclerView, RecyclerView.Adapter<RecyclerView.ViewHolder>) -> Unit = { _, _ -> }
 
     @Suppress("unused")
-    fun data(listSource: ListSource<T>) = apply { listData = listSource }
+    fun data(listSource: ListSource<T>) = apply {
+        listData = listSource
+    }
 
     // ------------------- LayoutManager setting --------------------
 
@@ -177,12 +185,20 @@ open class RecyclerViewBuilder<T> : ListSink<T> {
     }
 
     @Suppress("unused")
-    fun configure(block: (RecyclerView, CommonAdapter<T>) -> Unit) {
-        configBlock = block
+    fun configure(block: (RecyclerView, RecyclerView.Adapter<RecyclerView.ViewHolder>) -> Unit) {
+        recyclerViewConfigurer = block
+    }
+
+    fun header(factory: ViewHolderFactory<Any>) = apply {
+        headerFactories.add(factory)
+    }
+
+    fun footer(factory: ViewHolderFactory<Any>) = apply {
+        footerFactories.add(factory)
     }
 
     @Suppress("unused")
-    fun adapterFactory(factory: () -> CommonAdapter<T>) {
+    fun adapterFactory(factory: () -> RecyclerView.Adapter<RecyclerView.ViewHolder>) {
         adapterFactory = factory
     }
 
@@ -196,39 +212,94 @@ open class RecyclerViewBuilder<T> : ListSink<T> {
 //        viewHolderFactories.add(factory)
 //    }
 
-    private fun <VH : RecyclerView.ViewHolder> getRootAdapter(adapter: RecyclerView.Adapter<*>):
-        RecyclerView.Adapter<VH>? {
-
+    private fun getRootAdapter(
+        adapter: RecyclerView.Adapter<out RecyclerView.ViewHolder>
+    ) : RecyclerView.Adapter<out RecyclerView.ViewHolder> {
         return if (adapter is HasDelegate) {
-            @Suppress("UNCHECKED_CAST")
-            return (adapter as HasDelegate).let {
-                val delegate = adapter.getDelegated()
-                if (delegate is RecyclerView.Adapter<*>)
-                    (delegate as RecyclerView.Adapter<VH>)
-                else
-                    null
-            }
+            return (adapter as HasDelegate).getDelegated()
         } else {
-            @Suppress("UNCHECKED_CAST")
-            (adapter as RecyclerView.Adapter<VH>)
+            adapter
         }
     }
 
-    @Suppress("UNCHECKED_CAST")
-    private fun <T> getCommonAdapter(recyclerView: RecyclerView): CommonAdapter<T>? {
+    private fun getRootAdapter(recyclerView: RecyclerView):
+            RecyclerView.Adapter<out RecyclerView.ViewHolder>? {
         if (recyclerView.adapter == null) return null
-        val rootAdapter = getRootAdapter<RecyclerView.ViewHolder>(recyclerView.adapter as RecyclerView.Adapter<*>)
-        return if (rootAdapter is CommonAdapter<*>) {
-            recyclerView.adapter as CommonAdapter<T>
+        return getRootAdapter(recyclerView.adapter as RecyclerView.Adapter<*>)
+    }
+
+    private fun setListData(
+        recyclerView: RecyclerView,
+        newAdapter: RecyclerView.Adapter<out RecyclerView.ViewHolder>,
+        newData: ListSource<T>? = null
+    ) {
+
+        val rootAdapter = getRootAdapter(newAdapter)
+
+        @Suppress("UNCHECKED_CAST")
+        val sink = if (rootAdapter is ListSink<*>) {
+            rootAdapter as ListSink<T>
         } else {
-            null
+            throw IllegalArgumentException("new adapter does not implements ListSink")
         }
+
+        sink.listData = if (newData!=null) {
+            l.debug("Use new data")
+            newData
+        } else {
+            l.debug("keep old data")
+            var originalData: ListSource<T> = ListSource.EmptyListSource()
+            val castedAdapter = getRootAdapter(recyclerView)
+            if (castedAdapter is ListSink<*>) {
+                @Suppress("UNCHECKED_CAST")
+                originalData = castedAdapter.listData as ListSource<T>
+            }
+            originalData
+        }
+
+    }
+
+    private fun registerFactoryToAdapter(
+        adapter: RecyclerView.Adapter<out RecyclerView.ViewHolder>,
+        factory: ViewHolderFactory<T>
+    ) {
+        @Suppress("UNCHECKED_CAST")
+        val viewHolderConsumer: ViewHolderConsumer<T> = if (adapter is ViewHolderConsumer<*>)
+            adapter as ViewHolderConsumer<T>
+        else {
+            throw IllegalArgumentException("adapterFactory provided a non RecyclerView.Adapter object")
+        }
+
+        viewHolderConsumer.registerViewHolderFactory(factory)
+
+    }
+
+    private fun setFactoryInitParam(factory: ViewHolderFactory<T>, paramBuilder: RecyclerViewItemParamBuilder<T>) {
+
+        /*
+            Inject the init param if the factory implemen ts ParamSink
+         */
+        @Suppress("UNCHECKED_CAST")
+        if (factory is ParamSink<*>) {
+            val sink = factory as ParamSink<T>
+            sink.itemParam = paramBuilder.build()
+        }
+
     }
 
     fun build(recycler: RecyclerView): RecyclerView {
 
-        val castedAdapter: CommonAdapter<T>? = getCommonAdapter(recycler)
-        castedAdapter?.listData?.let { listData = it }
+        if (headerFactories.isNotEmpty() || footerFactories.isNotEmpty()) {
+            val originalAdapterFactory = adapterFactory
+            adapterFactory = {
+                HeaderFooterListAdapter(originalAdapterFactory.invoke()).apply {
+                    headerFactories.forEach { registerHeader(it) }
+                    footerFactories.forEach { registerFooter(it) }
+                    hasHeader = headerFactories.isNotEmpty()
+                    hasFooter = footerFactories.isNotEmpty()
+                }
+            }
+        }
 
         recycler.layoutManager = layoutManagerBuilder.build(recycler.context)
 
@@ -238,26 +309,26 @@ open class RecyclerViewBuilder<T> : ListSink<T> {
             recycler.addItemDecoration(it)
         }
 
-        val specifiedFactories = viewHolderFactories
-        val data = listData
+        recycler.adapter = adapterFactory.invoke().apply {
 
-        val newAdapter = adapterFactory.invoke().apply {
-            listData = data
-            specifiedFactories.forEach {
-                val nullableConfig = factoryConfigurators[it]
-                nullableConfig?.let { config ->
+            /*
+            Provide the list data if the adapter implements ListSink to accept the list
+             */
+            setListData(recycler, this, listData)
+
+            viewHolderFactories.forEach { factory ->
+                /*
+                Further configure each of the factories if a configuration block is provided.
+                 */
+                factoryConfigurators[factory]?.let { factoryConfigurator ->
                     val paramBuilder = RecyclerViewItemParamBuilder(defaultParam)
-                    config.invoke(paramBuilder)
-                    @Suppress("UNCHECKED_CAST")
-                    val sink = it as ParamSink<T>
-                    sink.itemParam = paramBuilder.build()
-                    registerViewHolderFactory(it)
+                    factoryConfigurator.invoke(paramBuilder)
+                    setFactoryInitParam(factory, paramBuilder)
+                    registerFactoryToAdapter(getRootAdapter(this), factory)
                 }
             }
-            configBlock.invoke(recycler, this)
+            recyclerViewConfigurer.invoke(recycler, this)
         }
-        // TODO add header footer adapter if needed
-        recycler.adapter = newAdapter
 
         return recycler
     }

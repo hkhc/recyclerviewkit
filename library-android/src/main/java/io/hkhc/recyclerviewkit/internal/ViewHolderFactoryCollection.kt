@@ -29,6 +29,10 @@ class ViewHolderFactoryCollection<T> {
         viewHolderFactories.add(factory)
     }
 
+    fun unregister(factory: ViewHolderFactory<T>) {
+        viewHolderFactories.remove(factory)
+    }
+
     fun findViewHolderFactory(viewType: Int): ViewHolderFactory<T>? {
         // TODO assert that viewType is not out of range
         if (viewType < 0 || viewType >= viewHolderFactories.size) {
@@ -41,7 +45,6 @@ class ViewHolderFactoryCollection<T> {
      * return index of factory. return -1 if no factory is found
      */
     fun matchViewHolderFactory(data: T): Int {
-        l.debug("before canHandle size = ${viewHolderFactories.size}")
         viewHolderFactories.forEachIndexed { index, it ->
             if (it.canHandle(data)) return@matchViewHolderFactory index
         }

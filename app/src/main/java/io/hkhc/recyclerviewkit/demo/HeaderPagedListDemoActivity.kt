@@ -31,10 +31,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import io.hkhc.demo.demo.R
 import io.hkhc.recyclerPaging.SwipeController
+import io.hkhc.recyclerviewkit.RecyclerViewBuilder
 import io.hkhc.recyclerviewkit.headfoot.HeaderFooterListAdapter
 import io.reactivex.disposables.Disposable
 
-class HeaderActivity : AppCompatActivity() {
+class HeaderPagedListDemoActivity : AppCompatActivity() {
 
     lateinit var listLiveData: LiveData<PagedList<Item>>
     var itemAdapter = ItemListAdapter()
@@ -68,12 +69,12 @@ class HeaderActivity : AppCompatActivity() {
                 PAGE_SIZE
             ).build()
             adapter = headingAdapter
-            listLiveData.observe(this@HeaderActivity, Observer {
+            listLiveData.observe(this@HeaderPagedListDemoActivity, Observer {
                 itemAdapter.submitList(it)
             })
             setHasFixedSize(false)
             val dividerItemDecoration = DividerItemDecoration(
-                this@HeaderActivity,
+                this@HeaderPagedListDemoActivity,
                 (layoutManager as LinearLayoutManager).getOrientation()
             )
             addItemDecoration(dividerItemDecoration)

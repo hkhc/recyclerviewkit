@@ -21,5 +21,5 @@ package io.hkhc.recyclerviewkit
 import androidx.recyclerview.widget.RecyclerView
 
 interface HasDelegate {
-    fun getDelegated(): RecyclerView.Adapter<*>
+    fun getDelegated(): RecyclerView.Adapter<out RecyclerView.ViewHolder>
 }
