@@ -18,12 +18,15 @@
 
 package io.hkhc.recyclerviewkit
 
+import androidx.paging.PagedListAdapter
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import io.hkhc.log.l
 import io.hkhc.recyclerviewkit.headfoot.HeaderFooterListAdapter
 import io.hkhc.recyclerviewkit.internal.CommonAdapter
+import io.hkhc.recyclerviewkit.internal.CommonPagedListAdapter
 import io.hkhc.recyclerviewkit.internal.ViewHolderConsumer
 
 /**
@@ -185,7 +188,7 @@ open class RecyclerViewBuilder<T>() : ListSink<T> {
     }
 
     @Suppress("unused")
-    fun configure(block: (RecyclerView, RecyclerView.Adapter<RecyclerView.ViewHolder>) -> Unit) {
+    fun configure(block: (RecyclerView, RecyclerView.Adapter<RecyclerView.ViewHolder>) -> Unit) = apply {
         recyclerViewConfigurer = block
     }
 
@@ -212,21 +215,7 @@ open class RecyclerViewBuilder<T>() : ListSink<T> {
 //        viewHolderFactories.add(factory)
 //    }
 
-    private fun getRootAdapter(
-        adapter: RecyclerView.Adapter<out RecyclerView.ViewHolder>
-    ) : RecyclerView.Adapter<out RecyclerView.ViewHolder> {
-        return if (adapter is HasDelegate) {
-            return (adapter as HasDelegate).getDelegated()
-        } else {
-            adapter
-        }
-    }
 
-    private fun getRootAdapter(recyclerView: RecyclerView):
-            RecyclerView.Adapter<out RecyclerView.ViewHolder>? {
-        if (recyclerView.adapter == null) return null
-        return getRootAdapter(recyclerView.adapter as RecyclerView.Adapter<*>)
-    }
 
     private fun setListData(
         recyclerView: RecyclerView,
@@ -240,16 +229,17 @@ open class RecyclerViewBuilder<T>() : ListSink<T> {
         val sink = if (rootAdapter is ListSink<*>) {
             rootAdapter as ListSink<T>
         } else {
-            throw IllegalArgumentException("new adapter does not implements ListSink")
+            null
         }
 
-        sink.listData = if (newData!=null) {
+        sink?.listData = if (newData!=null) {
             l.debug("Use new data")
             newData
         } else {
             l.debug("keep old data")
             var originalData: ListSource<T> = ListSource.EmptyListSource()
-            val castedAdapter = getRootAdapter(recyclerView)
+            val castedAdapter: RecyclerView.Adapter<out RecyclerView.ViewHolder>? =
+                recyclerView.getRootAdapter()
             if (castedAdapter is ListSink<*>) {
                 @Suppress("UNCHECKED_CAST")
                 originalData = castedAdapter.listData as ListSource<T>
@@ -332,6 +322,26 @@ open class RecyclerViewBuilder<T>() : ListSink<T> {
 
         return recycler
     }
+}
+
+fun getRootAdapter(
+    adapter: RecyclerView.Adapter<out RecyclerView.ViewHolder>
+) : RecyclerView.Adapter<out RecyclerView.ViewHolder> {
+    return if (adapter is HasDelegate) {
+        return (adapter as HasDelegate).getDelegated()
+    } else {
+        adapter
+    }
+}
+
+fun RecyclerView.getRootAdapter():
+        RecyclerView.Adapter<out RecyclerView.ViewHolder>? {
+    if (adapter == null) return null
+    return getRootAdapter(adapter as RecyclerView.Adapter<*>)
+}
+
+fun <T> RecyclerViewBuilder<T>.paging(diffutil: DiffUtil.ItemCallback<T>) = apply {
+    this.adapterFactory { CommonPagedListAdapter(diffutil) }
 }
 
 private fun RecyclerView.clearItemDecolator() {

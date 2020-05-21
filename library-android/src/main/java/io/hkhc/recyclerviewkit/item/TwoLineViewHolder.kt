@@ -42,6 +42,6 @@ class TwoLineViewHolder<T>(
         valueView2?.let { tv ->
             setTextViewText(tv, itemParam.mapper2.invoke(data))
         }
-        itemView.setOnClickListener { itemParam.onClick.invoke(it, data, position) }
+        itemView.setOnClickListener { itemParam.onClick.invoke(it, data, adapterPosition) }
     }
 }

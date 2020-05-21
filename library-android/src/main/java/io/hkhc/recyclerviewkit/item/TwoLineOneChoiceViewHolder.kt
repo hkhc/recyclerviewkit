@@ -47,7 +47,7 @@ class TwoLineOneChoiceViewHolder<T>(
         checkableValue?.let { tv ->
             setCheckable(tv, itemParam.mapperCheckable.invoke(data))
         }
-        itemView.setOnClickListener { itemParam.onClick.invoke(it, data, position) }
+        itemView.setOnClickListener { itemParam.onClick.invoke(it, data, adapterPosition) }
         if (checkableValue is CompoundButton) {
             checkableValue.setOnCheckedChangeListener { view, checked ->
                 itemParam.onToggle.invoke(view, checked, position) }

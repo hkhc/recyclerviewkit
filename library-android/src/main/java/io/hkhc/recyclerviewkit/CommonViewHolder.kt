@@ -39,6 +39,6 @@ open class CommonViewHolder<T>(
     }
 
     open fun bind(data: T, position: Int) {
-        itemView.setOnClickListener { itemParam.onClick.invoke(it, data, adapterPosition) }
+        itemView.setOnClickListener { itemParam.onClick.invoke(it, data, layoutPosition) }
     }
 }

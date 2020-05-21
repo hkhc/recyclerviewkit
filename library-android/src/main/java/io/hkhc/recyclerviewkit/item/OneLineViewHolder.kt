@@ -40,6 +40,6 @@ class OneLineViewHolder<T>(
         valueView?.let { tv ->
             setTextViewText(tv, data)
         }
-        itemView.setOnClickListener { itemParam.onClick.invoke(it, data, position) }
+        itemView.setOnClickListener { itemParam.onClick.invoke(it, data, adapterPosition) }
     }
 }

@@ -89,7 +89,7 @@ open class CommonAdapter<T> :
 
 
         val factory = viewHolderCollection.findViewHolderFactory(getItemViewType(position))
-        factory?.bind(holder, mData[holder.adapterPosition], holder.adapterPosition)
+        factory?.bind(holder, mData[position], position)
     }
 
 }

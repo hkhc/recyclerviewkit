@@ -71,7 +71,7 @@ class CommonPagedListAdapter<T>(diffUtil: DiffUtil.ItemCallback<T>) :
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val factory = viewHolderCollection.findViewHolderFactory(getItemViewType(position))
-        factory?.bind(holder, getItem(holder.adapterPosition)!!, holder.adapterPosition)
+        factory?.bind(holder, getItem(position)!!, position)
     }
 
     override fun getDelegated(): RecyclerView.Adapter<RecyclerView.ViewHolder> {

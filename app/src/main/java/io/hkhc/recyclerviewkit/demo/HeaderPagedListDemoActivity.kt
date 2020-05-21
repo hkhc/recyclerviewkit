@@ -20,19 +20,20 @@ package io.hkhc.recyclerviewkit.demo
 
 import android.content.Context
 import android.os.Bundle
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
-import androidx.recyclerview.widget.DividerItemDecoration
-import androidx.recyclerview.widget.ItemTouchHelper
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.paging.PagedListAdapter
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import io.hkhc.demo.demo.R
-import io.hkhc.recyclerPaging.SwipeController
 import io.hkhc.recyclerviewkit.RecyclerViewBuilder
-import io.hkhc.recyclerviewkit.headfoot.HeaderFooterListAdapter
+import io.hkhc.recyclerviewkit.getRootAdapter
+import io.hkhc.recyclerviewkit.item.OneLineItem
+import io.hkhc.recyclerviewkit.paging
 import io.reactivex.disposables.Disposable
 
 class HeaderPagedListDemoActivity : AppCompatActivity() {
@@ -49,38 +50,38 @@ class HeaderPagedListDemoActivity : AppCompatActivity() {
 
     fun initListView(ctx: Context, recyclerView: RecyclerView) {
 
-//        listAdapter.hasFooter = true
+        listLiveData = LivePagedListBuilder(
+            MyDataSourceFactory(itemApi),
+            PAGE_SIZE
+        ).build()
 
-        var headingAdapter = HeaderFooterListAdapter(itemAdapter).apply {
-            registerHeader(HeaderViewHolderFactory("Header 1"))
-            registerHeader(HeaderViewHolderFactory("Header 2"))
-            registerFooter(HeaderViewHolderFactory("Footer 1"))
-            registerFooter(HeaderViewHolderFactory("Footer 2"))
-            hasHeader = true
-            hasFooter = true
-        }
+        listLiveData.observe(this@HeaderPagedListDemoActivity, Observer {
+            (recyclerView.getRootAdapter() as PagedListAdapter<Item, RecyclerView.ViewHolder>)
+                .submitList(it)
+        })
 
-        recyclerView.apply {
-            layoutManager = LinearLayoutManager(ctx)
-            listLiveData = LivePagedListBuilder(
-                io.hkhc.recyclerviewkit.demo.MyDataSourceFactory(
-                    itemApi
-                ),
-                PAGE_SIZE
-            ).build()
-            adapter = headingAdapter
-            listLiveData.observe(this@HeaderPagedListDemoActivity, Observer {
-                itemAdapter.submitList(it)
+        RecyclerViewBuilder<Item>()
+            .linearVertical()
+            .viewHolderBy(OneLineItem())
+            .header(HeaderViewHolderFactory("Header 1"))
+            .header(HeaderViewHolderFactory("Header 2"))
+            .footer(HeaderViewHolderFactory("Footer 1"))
+            .footer(HeaderViewHolderFactory("Footer 2"))
+            .paging(object : DiffUtil.ItemCallback<Item>() {
+                override fun areItemsTheSame(oldItem: Item, newItem: Item): Boolean =
+                    oldItem.id == newItem.id
+
+                override fun areContentsTheSame(oldItem: Item, newItem: Item): Boolean =
+                    oldItem == newItem
             })
-            setHasFixedSize(false)
-            val dividerItemDecoration = DividerItemDecoration(
-                this@HeaderPagedListDemoActivity,
-                (layoutManager as LinearLayoutManager).getOrientation()
-            )
-            addItemDecoration(dividerItemDecoration)
-        }
-        val itemTouchHelper = ItemTouchHelper(SwipeController())
-        itemTouchHelper.attachToRecyclerView(recyclerView)
+            .itemDecolators { withVerticalDivider() }
+            .configure { recyclerView, _ -> recyclerView.setHasFixedSize(false) }
+            .build(recyclerView)
+
+//    val itemTouchHelper = ItemTouchHelper(SwipeController())
+//    itemTouchHelper.attachToRecyclerView(recyclerView)
+
+
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

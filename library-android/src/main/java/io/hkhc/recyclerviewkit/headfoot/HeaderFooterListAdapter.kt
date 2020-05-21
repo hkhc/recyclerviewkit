@@ -152,8 +152,8 @@ class HeaderFooterListAdapter<WrappedVH : RecyclerView.ViewHolder>(
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         l.debug("onBindViewHolder pos A $position")
         when {
-            headerItemRegistry.inRangeAndVisible(position) -> headerItemRegistry.bind(holder)
-            footerItemRegistry.inRangeAndVisible(position) -> footerItemRegistry.bind(holder)
+            headerItemRegistry.inRangeAndVisible(position) -> headerItemRegistry.bind(holder, position)
+            footerItemRegistry.inRangeAndVisible(position) -> footerItemRegistry.bind(holder, position)
             else -> {
                 @Suppress("UNCHECKED_CAST")
                 return delegateAdapter.onBindViewHolder(holder as WrappedVH, delegatedPosition((position)))
@@ -184,9 +184,9 @@ class HeaderFooterListAdapter<WrappedVH : RecyclerView.ViewHolder>(
     ) {
         when {
             headerItemRegistry.inRangeAndVisible(position) ->
-                headerItemRegistry.bind(holder, payloads)
+                headerItemRegistry.bind(holder, position, payloads)
             footerItemRegistry.inRangeAndVisible(position) ->
-                footerItemRegistry.bind(holder, payloads)
+                footerItemRegistry.bind(holder, position, payloads)
             else -> {
                 @Suppress("UNCHECKED_CAST")
                 delegateAdapter.onBindViewHolder(holder as WrappedVH, delegatedPosition((position)), payloads)

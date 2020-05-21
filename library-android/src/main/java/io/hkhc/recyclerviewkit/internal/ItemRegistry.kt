@@ -154,12 +154,12 @@ open abstract class ItemRegistry<WrappedVH : RecyclerView.ViewHolder>(
         return factories[listPosToGroupPos(pos)]
     }
 
-    fun bind(viewHolder: RecyclerView.ViewHolder, payloads: List<Any>? = null) {
-        if (!inRange(viewHolder.adapterPosition)) {
-            throw IllegalStateException("Invalid position (${viewHolder.adapterPosition})")
+    fun bind(viewHolder: RecyclerView.ViewHolder, pos: Int, payloads: List<Any>? = null) {
+        if (!inRange(pos)) {
+            throw IllegalStateException("Invalid position (${pos})")
         }
-        getFactoryByAdapterPosition(viewHolder.adapterPosition)
-            ?.bind(viewHolder, Any(), viewHolder.adapterPosition, payloads)
+        getFactoryByAdapterPosition(pos)
+            ?.bind(viewHolder, Any(), pos, payloads)
     }
 
     // return type or -1 if it is not header
