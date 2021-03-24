@@ -1,4 +1,4 @@
-import de.fayard.dependencies.bootstrapRefreshVersionsAndDependencies
+import de.fayard.refreshVersions.bootstrapRefreshVersions
 
 /*
  * Copyright (c) 2020. Herman Cheung
@@ -34,12 +34,12 @@ buildscript {
         gradlePluginPortal()
     }
     dependencies {
-        classpath("de.fayard:dependencies:0.5.8")
+        classpath("de.fayard.refreshVersions:refreshVersions:0.9.7")
     }
 }
 
 
-bootstrapRefreshVersionsAndDependencies()
+bootstrapRefreshVersions()
 
 rootProject.name="recyclerviewkit"
 include(":app")

@@ -20,12 +20,8 @@ import org.jlleitschuh.gradle.ktlint.reporter.*
 plugins {
     id("com.android.library")
     id("kotlin-android")
-    id("kotlin-android-extensions")
     id("kotlin-kapt")
-    // "io.hkhc.simplepublisher" must be after "com.android.library"
-    // so that libraryVariants is configured before simplePublisher
-    id("io.hkhc.simplepublisher")
-    id("digital.wup.android-maven-publish") version "3.6.2"
+    id("io.hkhc.jarbird")
     id("org.jlleitschuh.gradle.ktlint")
     id("io.gitlab.arturbosch.detekt")
     // for build script debugging
@@ -48,17 +44,26 @@ java {
     targetCompatibility = JavaVersion.VERSION_1_8
 }
 
-tasks {
-    dokka {
-        outputFormat = "html"
-        outputDirectory = "$buildDir/dokka"
-        // set true to omit intra-project dependencies
-        disableAutoconfiguration = true
-    }
-}
+//tasks {
+//    dokka {
+//        outputFormat = "html"
+//        outputDirectory = "$buildDir/dokka"
+//        // set true to omit intra-project dependencies
+//        disableAutoconfiguration = true
+//    }
+//}
 
 android {
     compileSdkVersion(28)
+
+    sourceSets {
+        named("main") {
+            java.srcDirs("src/main/java", "src/main/kotlin")
+        }
+        named("release") {
+            java.srcDirs("src/release/java", "src/release/kotlin")
+        }
+    }
 
     defaultConfig {
         minSdkVersion(21)
@@ -108,21 +113,26 @@ ktlint {
 
 android.libraryVariants.configureEach {
     val variantName = name
+    val variant = this
 
     if (variantName == "release") {
-        simplyPublish {
-            useGpg = true
-            variant = variantName
-            pubComponent = "android"
-            sourcesPath = files(javaCompileProvider.get().source)
+        if (variantName == "release") {
+            jarbird {
+                pub(variantName) {
+                    useGpg = true
+                    from(variant)
+                }
+            }
         }
     }
 }
 
+// In cast if you wonder how the dependency versions gone, see
+// https://jmfayard.github.io/refreshVersions/
 @Suppress("GradleDependency")
 dependencies {
 
-    implementation(kotlin("stdlib-jdk8", "1.3.71"))
+    implementation(kotlin("stdlib-jdk8", "1.4.31"))
 
     implementation("io.hkhc.log:ihlog-android:_")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:_")
